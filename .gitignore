@@ -4,6 +4,7 @@
 *.bcf
 *.blg
 *.ilg
+*.lof
 *.log
 *.lot
 *.nlo
@@ -20,3 +21,4 @@ abstract*
 acknowledgements.tex
 discussion.tex
 introduction.tex
+!main.pdf

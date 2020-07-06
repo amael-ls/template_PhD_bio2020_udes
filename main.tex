@@ -1,0 +1,394 @@
+
+\documentclass[titlepage,oneside,letterpaper,openright,12pt]{report}
+
+%%%%%%%%%%%%%%%%%%%    COMMENTS    %%%%%%%%%%%%%%%%%%%
+% 1. To stop numbering the lines, deactivate \linenumbers (activated after loading the package lineno)
+% 
+% 2. To make the index, you need to compile first with lualatex and then use makeindex. Example:
+%		lualatex main.tex
+%		makeindex main.nlo -s nomencl.ist -o main.nls
+%		lualatex main.tex
+% 
+% 3. For the bibliography, use the command biber (as I am using the package biblatex, much more modern than bibtex).
+%		To use multiple bibliography, use the refsection environment (3.13.3 Multiple Bibliographies in biblatex doc Version 3.13).
+%		Do not use the chapterbib package with biblatex, there is refsection environment for that!
+%		Each article will need to use
+%		\begin{refsection}
+%			Intro, Methods, Results, Discussion
+%			\printbibliography[heading=subbibnumbered]
+%		\end{refsection}
+% 
+% 4. I defined two languages in the document, French and British english (which is the main language), use \begin{french} ... \end{french} to switch to French in a paragraph
+% 
+% 5. To avoid multi-defined labels, I recommend to apply this command line in your shell for each tex file of the folders ./article1/, ./article2/, ...:
+% 		sed -i.tmp 's/\\label{/\\label{WHATEVER::/g' *.tex
+% 			This will change all the labels by adding WHATEVER before. Example (adding article1 for each tex file in ./article1/ folder):
+% 			\label{sec::intro} in ./article1/chap1.tex becomes \label{article1::sec::intro}
+%		sed -i.tmp 's/\\ref{/\\ref{WHATEVER::/g' *.tex
+%			This will change all the refs by adding WHATEVER before. Example (adding article1 for each tex file in ./article1/ folder):
+% 			\ref{sec::intro} in ./article1/chap1.tex becomes \ref{article1::sec::intro}
+% 		sed -i.tmp 's/\\eqref{/\\eqref{WHATEVER::/g' *.tex
+%			This will change all the eqrefs by adding WHATEVER before. Example (adding article1 for each tex file in ./article1/ folder):
+% 			\eqref{eq::R0_equation} in ./article1/chap1.tex becomes \eqref{article1::eq::R0_equation}
+% 
+%	For safety reasons, the original file will be kept in a temporary file '.tmp'. Example:
+%		sed -i.tmp 'Your instructions here' introduction.tex will create two files:
+% 			introduction.tex which should be the one to keep (if no mistakes in the sed instructions)
+% 			introduction.tex.tmp which is the original file (that you can dump if sed behaved the way you expected)
+% 	For an introduction to the power of sed and regular expressions: https://www.grymoire.com/Unix/Sed.html#uh-1
+% 
+% 6. I defined some colours in this document. Except RdeepBlue, none of them is used in this template and can be deleted.
+% 	If you delete RdeepBlue, do not forget to adapt all the commands using this colour
+
+%%%%%%%%%%%%%%%%%%%    PACKAGES    %%%%%%%%%%%%%%%%%%%
+%%%% font
+\usepackage{fontspec}
+\usepackage{marvosym}
+
+%%%% Language
+\usepackage{polyglossia}
+	\setdefaultlanguage[variant=british]{english}
+	\setotherlanguages{french}
+
+%%%% Date
+\usepackage{datetime}
+	\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEYEAR}
+
+%%%% marges, space, titles...
+\usepackage[top=3.75cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+% \usepackage{setspace}
+\setlength{\parindent}{0ex}   % indentation au début de chaque paragraphe
+\setlength{\parskip}{3ex plus 0.5ex minus 0.2ex} % espace vertical entre paragraphes
+
+\usepackage{titlesec}
+\newcommand\chapterstring{CHAPITRE}
+\titleformat{\chapter}[display]{\vspace{-8em}\center\bfseries}{\chapterstring~\thechapter}{12pt}{}[\vspace{1.5ex}]
+\titleformat{\section}{\vspace{0mm plus 2cm}\addpenalty{-1000}\bfseries\sffamily}{\thesection}{1em}{}
+\titleformat{\subsection}{\addpenalty{-500}\bfseries\sffamily}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\penalty-500\vspace{0pt plus 2pt}{}\bfseries\sffamily}{\thesubsubsection}{}{}[\vspace{-14pt}]
+
+\usepackage{titletoc}
+	\titlecontents{chapter}[0pt]{}{\bfseries\chapterstring~\thecontentslabel~}{\bfseries}{\hspace{1em plus 1fill}\contentspage}
+
+%%%% Appendix
+\usepackage{appendix}
+%% Start of subappendices environment
+\AtBeginEnvironment{subappendices}{%
+	\chapter*{Appendix}
+	\addcontentsline{toc}{chapter}{Appendices}
+	\counterwithin{figure}{section}
+	\counterwithin{table}{section}
+}
+
+%% End of subappendices environment
+\AtEndEnvironment{subappendices}{%
+	\counterwithout{figure}{section}
+	\counterwithout{table}{section}
+}
+
+%%%% Graphics
+%% To compile with lualatex
+\usepackage[luatex]{graphicx}
+
+%% Graphics' path, but I prefer to use absolute path for safety
+% \graphicspath{{./article1/}{./article2/}{article3/}}
+
+%% Numbering figures in sections rather than continuously
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+
+%% Put figures within their declaration section 
+\usepackage[section]{placeins}
+
+%% To create multi-figures
+\usepackage{caption}
+\usepackage{subcaption}
+
+%% Colours
+\usepackage[dvipsnames, svgnames]{xcolor}
+	\definecolor{Rblack}{RGB}{0,0,0}
+	\definecolor{Rgrey}{RGB}{42,51,68}
+	\definecolor{RdeepBlue}{RGB}{17,34,170}
+	\definecolor{RmidBlue}{RGB}{32,88,220}
+	\definecolor{RlightBlue}{RGB}{90,130,234}
+	\definecolor{RuglyGreen}{RGB}{253,236,190}
+	\definecolor{RyellowPea}{RGB}{253,219,91}
+	\definecolor{RdeepYellow}{RGB}{250,185,53}
+	\definecolor{Rsalmon}{RGB}{253,152,89}
+	\definecolor{Rred}{RGB}{182,52,58}
+
+	\definecolor{lightAvailability_grey}{RGB}{20,20,20}
+
+%% Tikz
+\usepackage{tikz}
+
+%%%% Tab, list...
+%% Best package for tables
+\usepackage{booktabs}
+
+%% List
+\usepackage{enumerate}
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+
+%% Nomenclature (containing three sections: Acronyms, greek symbols, roman symbols) https://tex.stackexchange.com/questions/452107/nomenclature-having-two-or-more-descriptions-and-units-for-a-symbol
+\usepackage[intoc]{nomencl}
+
+%% Change caption entries to whatever you want (also done in the ToC)
+\addto\captionsenglish{ % Replace "english" with the language you use, if you use babel you might have to replace english by british or USenglish
+	\renewcommand{\contentsname}{TABLE DES MATIÈRES}
+	\renewcommand{\listtablename}{LISTE DES TABLEAUX}
+	\renewcommand{\listfigurename}{LISTE DES FIGURES}
+}
+
+%%%% Links
+\usepackage{url}
+\usepackage[luatex, colorlinks=true, linkcolor=black, urlcolor=RdeepBlue, citecolor=RdeepBlue]{hyperref}
+
+%%%% Bibliography and table of contents
+%% Bibliography output using biblatex
+\usepackage{csquotes}
+\usepackage[style=apa, natbib=true, sorting=ynt]{biblatex}
+% \usepackage[uniquelist=false, backend=biber, citestyle=authoryear-comp, sorting=nyt, sortcites=true, giveninits=true, hyperref, natbib, url=false, doi=false, eprint=false, isbn=false, maxbibnames=25, maxcitenames=2, mincitenames=1, uniquename=init, refsection=chapter]{biblatex}
+\addbibresource{phd.bib}
+
+%% Table of content (= ToC)
+\usepackage[nottoc]{tocbibind}
+
+%%%% Mathematics
+\usepackage{amsthm}
+\usepackage{amsmath}
+	\allowdisplaybreaks % allows breaks between pages in formula
+\usepackage{amssymb}
+\usepackage{bbold}
+\usepackage{dsfont}
+\usepackage{mathrsfs}
+\usepackage{bm}
+\usepackage{xfrac}
+\usepackage{etoolbox} % For renumbering
+\usepackage{thmbox} % For "theorem" definitions
+\usepackage{gensymb}
+\usepackage{siunitx}
+	\sisetup{
+		inter-unit-product=\ensuremath{{}\cdot{}},
+		per-mode=symbol
+	}
+
+\DeclareMathOperator{\logit}{logit}
+
+%%%% Line numbers --conflict with amsthm-- pdf http://texblog.org/2012/02/08/adding-line-numbers-to-documents/
+\usepackage{lineno}
+	\linenumbers
+
+%%%%%%%%%%%%%%%%%%%%%   OTHERS   %%%%%%%%%%%%%%%%%%%%%
+% http://tex.stackexchange.com/questions/13304/which-package-version-am-i-using
+\listfiles % Add \listfiles to your preamble and then look at the .log file. This will tell you the current version of all the packages loaded
+
+%%%%%%%%%%%%%%%%%%%%%   NOMENCLATURE CODING   %%%%%%%%%%%%%%%%%%%%%
+\makenomenclature
+\renewcommand{\nomname}{LISTE DES ABBRÉVIATIONS}
+
+\ExplSyntaxOn
+\RenewDocumentCommand\nomgroup{m}
+{
+	\item[\textbf{\textcolor{RdeepBlue}{\choosenomgroup{#1}}}]
+}
+\NewDocumentCommand{\choosenomgroup}{m}
+{
+	\str_case:nn { #1 }
+	{
+		{A}{Acronymes}
+		{L}{Symboles~latins}
+		{G}{Symboles~grecs}
+	}
+}
+\ExplSyntaxOff
+\renewcommand*{\nompreamble}{\markboth{\nomname}{\nomname}}
+
+\newcommand{\nomunit}[1]{%
+	\renewcommand{\nomentryend}{\hspace*{\fill}\si{#1}}%
+}
+
+%%%%%%%%%%%%%%%%%%   HYPHENATION    %%%%%%%%%%%%%%%%%%
+%%%% If latex has troubles to split a word, you can teach it here
+% \hyphenation{cal-cu-lus}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%   NEW COMMANDS USER'S SPECIFIC   %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% Commands that will be apply to the whole Ph.D. For chapter specific commands, declare them in the chapters (and use renewcommand if a name is used twice)
+%%%% Text commands
+\newcommand {\ie}{\textit{i.e., }}
+\newcommand {\eg}{\textit{e.g., }}
+\newcommand {\cf}{\textit{cf} }
+\providecommand{\keywords}[1]{\textbf{Mots-clefs:} #1}
+
+
+%%%% Tikz
+%% Libraries (specific tikz commands are in article*/main.tex files)
+\usetikzlibrary{arrows, plotmarks, decorations.markings}
+\tikzstyle{arrow} = [->,>=stealth,thick,rounded corners=4pt,line width=1pt]
+\usetikzlibrary{shadows}
+\usetikzlibrary{shadings}
+\usetikzlibrary{positioning} % relative coodinate
+\usetikzlibrary{tikzmark, calc} % calc, to calculate coordinate
+\usetikzlibrary{decorations.pathmorphing} % to snake an arrow
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{patterns}
+
+%% Gradient shadings command
+\makeatletter
+\def\createshadingfromlist#1#2#3{%
+	\pgfutil@tempcnta=0\relax
+	\pgfutil@for\pgf@tmp:={#3}\do{\advance\pgfutil@tempcnta by1}%
+	\ifnum\pgfutil@tempcnta=1\relax%
+		\edef\pgf@spec{color(0)=(#3);color(100)=(#3)}%
+	\else%
+		\pgfmathparse{50/(\pgfutil@tempcnta-1)}\let\pgf@step=\pgfmathresult%
+		\pgfutil@tempcntb=1\relax%
+		\pgfutil@for\pgf@tmp:={#3}\do{%
+			\ifnum\pgfutil@tempcntb=1\relax%
+				\edef\pgf@spec{color(0)=(\pgf@tmp);color(25)=(\pgf@tmp)}%
+			\else%
+	        \ifnum\pgfutil@tempcntb<\pgfutil@tempcnta\relax%
+				\pgfmathparse{25+\pgf@step/4+(\pgfutil@tempcntb-1)*\pgf@step}%
+				\edef\pgf@spec{\pgf@spec;color(\pgfmathresult)=(\pgf@tmp)}%
+	        \else%
+	        	\edef\pgf@spec{\pgf@spec;color(75)=(\pgf@tmp);color(100)=(\pgf@tmp)}%
+	        \fi%
+	    \fi%
+	    \advance\pgfutil@tempcntb by1\relax%
+	    }%
+	\fi%
+	\csname pgfdeclare#2shading\endcsname{#1}{100}\pgf@spec%
+}
+
+%%%%%%%% Math commands
+%%%% Maths
+\newcommand {\s}{{s}^{*}}
+\newcommand {\sst}{\tilde{s}^{*}} % s* stable d'où le st
+\newcommand {\N}{\tilde{N}}
+\newcommand {\A}{\mathscr{A}}
+\newcommand {\K}{\mathcal{K}}
+\renewcommand{\S}{\mathscr{S}}
+\newcommand{\R}{\mathds{R}}
+\newcommand{\Prob}{\mathds{P}}
+\newcommand{\F}{\mathcal{F}}
+
+%%%% Theorem style
+\newtheoremstyle{theo}{\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{\newline}{\thmname{#1} \thmnumber{#2} \thmnote{~: \textit{#3}}}
+\theoremstyle{theo}
+\newtheorem{rem}{Remark}[section]
+\newtheorem{defi}{Definition}[section]
+\newtheorem{assum}{Assumption}[section]
+\newtheorem{nota}{Notation}[section]
+
+%%%%%%%%%%%%%%%%%%%%%   BEGIN DOCUMENT   %%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%% Starts by a blank page
+\newpage
+\thispagestyle{empty}
+\mbox{}
+
+%%%% Title page
+\begin{titlepage}
+	\begin{center}
+		\textsc{Your title small caps} \\
+	\vspace{2cm}
+	par \\
+	\vspace{2cm}
+	Amaël Le Squin
+	\vspace{1cm}
+	Université de Sherbrooke \\
+	\vspace{1cm}
+	Thèse présentée au Département de biologie en vue \\
+	de l'obtention du grade de docteur ès sciences (Ph.D.)
+	\vfill
+	\textsc{faculté des sciences} \\
+	\textsc{université de sherbrooke} \\
+	\vspace{2cm}
+	Sherbrooke, Québec, Canada, \begin{french} \monthyeardate\today \end{french}
+	\end{center}	
+\end{titlepage}
+
+%%%% Jury page (and not Jimmy page...)
+\thispagestyle{empty}
+\begin{center}
+\begin{french}
+	Le \today \\
+	\vspace{1cm}
+	\textit{Le jury a accepté la thèse d'Amaël Le Squin dans sa version finale} \\
+	\vspace{1cm}
+	Membre du jury \\
+	\vspace{1cm}
+	Professeur Dominique Gravel \\
+	Directeur de recherche \\
+	Département de biologie \\
+	Université de Sherbrooke \\
+	\vspace{1cm}
+	Professeure Isabelle Boulangeat \\
+	Codirectrice de recherche \\
+	IRSTEA \\
+	\vspace{1cm}
+	Professeur Prénom et nom \\
+	Évaluatrice ou Évaluateur externe \\
+	Département nom \\
+	Nom de l'institution \\
+	\vspace{1cm}
+	Professeure Prénom et nom \\
+	Évaluatrice ou Évaluateur interne \\
+	Département nom \\
+	Nom de l'institution \\
+	\vspace{1cm}
+	Professeure Prénom et nom \\
+	Président-rapporteur \\
+	Département de biologie \\
+	Université de Sherbrooke
+\end{french}
+\end{center}
+
+%%%% From abstract (included) to Introduction (excluded)
+%% Start roman numbering
+\pagenumbering{roman}
+\input{abstract_fr}
+
+\input{abstract_en}
+
+\input{acknowledgements}
+
+%% Table of contents
+\tableofcontents
+
+%% Nomencalture
+\printnomenclature
+
+%% List of tables
+\listoftables
+
+%% List of figures
+\listoffigures
+
+\newpage
+%%%% Main body
+%% Start arabic numbering
+\pagenumbering{arabic}
+
+%% Input chapters
+\input{./introduction}
+\input{./article1/main}
+% \input{./article3/main}
+
+\nomenclature[a]{TPS}{Thermal protection System}
+\nomenclature[L]{$v$}{Fluid velocity\nomunit{\metre\per\second}}
+\nomenclature[G]{$\tau$}{Longitude \nomunit{\radian}}
+\nomenclature[g]{$\tau$}{Dimensional time \nomunit{\second}}
+\nomenclature[g]{$\delta$}{Geocentric Latitude \nomunit{\radian}}
+\nomenclature[g]{$\delta$}{Differential Operator}
+\nomenclature[g]{$\delta$}{Radius of Trust Region \nomunit{\meter}}
+\nomenclature[g]{$\delta^*$}{Geodetic Latitude.  \nomunit{\radian}}
+
+%%%% Ends by a blank page, congrats!
+\newpage
+\thispagestyle{empty}
+\mbox{}
+
+\end{document}

@@ -1,9 +1,14 @@
 # Template Ph.D. Biology U. de Sherbrooke (2020)
 ## Introduction
 This template has not yet been validated. Because I am using a lot of tikz pictures, I use the compiler lualatex. It shall not change anything to you, except that the command line:
-```pdflatex myDoc.tex``` is replaced by ```lualatex myDoc.tex```
-Lualatex has also many other advantages, see https://ctan.org/pkg/lualatex-doc
-Note that by changing few packages, you could be back to ```pdflatex```
+```
+	pdflatex myDoc.tex
+```
+is replaced by
+```
+	lualatex myDoc.tex
+```
+Lualatex has also many other advantages, see https://ctan.org/pkg/lualatex-doc. Note that by changing few packages (polyglossya for instance) and few options, you can get back to ```pdflatex```
 
 ## Comments
 All these comments are in the main.tex file. I just copy-paste them for ease of read

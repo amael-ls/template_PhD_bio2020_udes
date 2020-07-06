@@ -8,7 +8,7 @@ is replaced by
 ```
 	lualatex myDoc.tex
 ```
-Lualatex has also many other advantages, see https://ctan.org/pkg/lualatex-doc. Note that by changing few packages (polyglossya for instance) and few options, you can get back to ```pdflatex```
+Lualatex has also many other advantages, see https://ctan.org/pkg/lualatex-doc. Note that by changing few packages (polyglossia for instance) and few options, you can easily get back to ```pdflatex```
 
 ## Comments
 All these comments are in the main.tex file. I just copy-paste them for ease of read
@@ -28,7 +28,7 @@ All these comments are in the main.tex file. I just copy-paste them for ease of 
 		\printbibliography[heading=subbibnumbered]
 	\end{refsection}
 	```
-4. I defined two languages in the document, French and British english (which is the main language), use \selectlanguage to switch to French in a paragraph
+4. I defined two languages in the document, French and British english (which is the main language), use \begin{french} ... \end{french} to switch to French in a paragraph
 5. To avoid multi-defined labels, I recommend to apply this command line in your shell for each tex file of the folders ./article1/, ./article2/, ...:
 	```
 		sed -i.tmp 's/\\label{/\\label{WHATEVER::/g' *.tex

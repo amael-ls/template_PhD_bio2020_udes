@@ -128,7 +128,8 @@
 
 %% List
 \usepackage{enumerate}
-\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+\usepackage{enumitem} % http://ctan.org/pkg/enumitem
+	\SetEnumitemKey{diagSep}{topsep=0pt, partopsep=0pt} % Used in the acknowledgements only, can be removed safely
 
 %% Nomenclature (containing three sections: Acronyms, greek symbols, roman symbols) https://tex.stackexchange.com/questions/452107/nomenclature-having-two-or-more-descriptions-and-units-for-a-symbol
 \usepackage[intoc]{nomencl}
@@ -375,16 +376,14 @@
 %% Input chapters
 \input{./introduction}
 \input{./article1/main}
-% \input{./article3/main}
+\input{./article3/main}
 
-\nomenclature[a]{TPS}{Thermal protection System}
-\nomenclature[L]{$v$}{Fluid velocity\nomunit{\metre\per\second}}
-\nomenclature[G]{$\tau$}{Longitude \nomunit{\radian}}
-\nomenclature[g]{$\tau$}{Dimensional time \nomunit{\second}}
-\nomenclature[g]{$\delta$}{Geocentric Latitude \nomunit{\radian}}
-\nomenclature[g]{$\delta$}{Differential Operator}
-\nomenclature[g]{$\delta$}{Radius of Trust Region \nomunit{\meter}}
-\nomenclature[g]{$\delta^*$}{Geodetic Latitude.  \nomunit{\radian}}
+\chapter{Examples of nomenclature commands}
+In this section we adapt EBT\nomenclature[A]{EBT}{Escalator Boxcar Train} to spatial PSPMs, with the space $ \Gamma $\nomenclature[G]{$ \Gamma $}{Physical space, $ \Gamma \subset \R^2 $ bounded} discretised such that $ \Gamma = \bigcup_{k} \gamma_k $. The growth speed of trees is $ G $\nomenclature[L]{$ G $}{Individual tree growth \nomunit{\metre\per\second}}. Actually, I changed my mind and now G stands for the Galapagos Islands\nomenclature[L]{G}{The Galapagos Islands}.
+
+\input{./discussion}
+
+\printbibliography[heading=bibintoc, title=BIBLIOGRAPHIE]
 
 %%%% Ends by a blank page, congrats!
 \newpage

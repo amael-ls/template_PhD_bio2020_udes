@@ -11,7 +11,7 @@ is replaced by
 Lualatex has also many other advantages, see https://ctan.org/pkg/lualatex-doc. Note that by changing few packages (polyglossia for instance) and few options, you can easily get back to ```pdflatex```
 
 ## Comments
-All these comments are in the main.tex file. I just copy-paste them for ease of read
+Most of these comments are in the main.tex file. I just copy-paste them for ease of read
 1. To stop numbering the lines, deactivate ```\linenumbers``` (activated after loading the package lineno)
 2. To make the index, you need to compile first with ```lualatex``` (or ```pdflatex``` if you modified the template) and then use ```makeindex```. Example:
 	```
@@ -27,6 +27,10 @@ All these comments are in the main.tex file. I just copy-paste them for ease of 
 		Blablabla articles
 		\printbibliography[heading=subbibnumbered]
 	\end{refsection}
+	```
+	For the introduction and discussion, do not use the ```\refsection``` environment as the bibliographies have to be together, neither do use ```\printbibliography[heading=subbibnumbered]```. All the citations of the intro and discussion will be cited at the end with the command
+	````
+		\printbibliography[heading=bibintoc, title=BIBLIOGRAPHIE]
 	```
 4. I defined two languages in the document, French and British english (which is the main language), use \begin{french} ... \end{french} to switch to French in a paragraph
 5. To avoid multi-defined labels, I recommend to apply this command line in your shell for each tex file of the folders ./article1/, ./article2/, ...:
@@ -46,8 +50,10 @@ All these comments are in the main.tex file. I just copy-paste them for ease of 
 		sed -i.tmp 'Your instructions here' introduction.tex
 	````
 	will create two files:
+
 		- introduction.tex which should be the one to keep (if no mistakes in the sed instructions)
 		- introduction.tex.tmp which is the original file (that you can dump if sed behaved the way you expected)
+	
 	For an introduction to the power of sed and regular expressions: https://www.grymoire.com/Unix/Sed.html#uh-1 
 6. I defined some colours in this document. Except RdeepBlue, none of them is used in this template and can be deleted.
  	If you delete RdeepBlue, do not forget to adapt all the commands using this colour!

@@ -50,8 +50,10 @@ Most of these comments are in the main.tex file. I just copy-paste them for ease
 	sed -i.tmp 'Your instructions here' introduction.tex
 	```
 	will create two files:
+
 		- introduction.tex which should be the one to keep (if no mistakes in the sed instructions)
 		- introduction.tex.tmp which is the original file (that you can dump if sed behaved the way you expected)
+		
 	For an introduction to the power of sed and regular expressions: https://www.grymoire.com/Unix/Sed.html#uh-1 
 6. I defined some colours in this document. Except RdeepBlue, none of them is used in this template and can be deleted.
  	If you delete RdeepBlue, do not forget to adapt all the commands using this colour!

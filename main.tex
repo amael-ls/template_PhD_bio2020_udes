@@ -73,18 +73,18 @@
 %%%% Appendix
 \usepackage{appendix}
 %% Start of subappendices environment
-\AtBeginEnvironment{subappendices}{%
-	\chapter*{Appendix}
-	\addcontentsline{toc}{chapter}{Appendices}
-	\counterwithin{figure}{section}
-	\counterwithin{table}{section}
-}
+% \AtBeginEnvironment{subappendices}{%
+% 	\chapter*{Appendix}
+% 	\addcontentsline{toc}{chapter}{Appendices}
+% 	\counterwithin{figure}{section}
+% 	\counterwithin{table}{section}
+% }
 
-%% End of subappendices environment
-\AtEndEnvironment{subappendices}{%
-	\counterwithout{figure}{section}
-	\counterwithout{table}{section}
-}
+% %% End of subappendices environment
+% \AtEndEnvironment{subappendices}{%
+% 	\counterwithout{figure}{section}
+% 	\counterwithout{table}{section}
+% }
 
 %%%% Graphics
 %% To compile with lualatex
@@ -148,8 +148,7 @@
 %%%% Bibliography and table of contents
 %% Bibliography output using biblatex
 \usepackage{csquotes}
-\usepackage[style=apa, natbib=true, sorting=ynt]{biblatex}
-% \usepackage[uniquelist=false, backend=biber, citestyle=authoryear-comp, sorting=nyt, sortcites=true, giveninits=true, hyperref, natbib, url=false, doi=false, eprint=false, isbn=false, maxbibnames=25, maxcitenames=2, mincitenames=1, uniquename=init, refsection=chapter]{biblatex}
+\usepackage[style=apa, natbib=true, sorting=ynt, url=false, doi=false]{biblatex}
 \addbibresource{phd.bib}
 
 %% Table of content (= ToC)
@@ -384,6 +383,15 @@ In this section we adapt EBT\nomenclature[A]{EBT}{Escalator Boxcar Train} to spa
 \input{./discussion}
 
 \printbibliography[heading=bibintoc, title=BIBLIOGRAPHIE]
+
+\renewcommand{\chapterstring}{ANNEXE}
+\titlecontents{chapter}[0pt]{}{\bfseries ANNEXE~\thecontentslabel~}{\bfseries}{\hspace{1em plus 1fill}\contentspage}
+\begin{appendices}
+	\chapter{Article 1}
+	\input{article1/appendices/app_calc_R0}
+	\input{article1/appendices/app_purves2009}
+	\chapter{Article 2}
+\end{appendices}
 
 %%%% Ends by a blank page, congrats!
 \newpage

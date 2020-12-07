@@ -18,7 +18,7 @@
 %			\printbibliography[heading=subbibnumbered]
 %		\end{refsection}
 % 
-% 4. I defined two languages in the document, French and British english (which is the main language), use \begin{french} ... \end{french} to switch to French in a paragraph
+% 4. I defined two languages in the document, French and British english (which is the main language), use \begin{french} ... \end{french} to switch to French in a paragraph. I also used the package bicaption that allows for bilingual captions
 % 
 % 5. To avoid multi-defined labels, I recommend to apply this command line in your shell for each tex file of the folders ./article1/, ./article2/, ...:
 % 		sed -i.tmp 's/\\label{/\\label{WHATEVER::/g' *.tex
@@ -29,6 +29,9 @@
 % 			\ref{sec::intro} in ./article1/chap1.tex becomes \ref{article1::sec::intro}
 % 		sed -i.tmp 's/\\eqref{/\\eqref{WHATEVER::/g' *.tex
 %			This will change all the eqrefs by adding WHATEVER before. Example (adding article1 for each tex file in ./article1/ folder):
+% 			\eqref{eq::R0_equation} in ./article1/chap1.tex becomes \eqref{article1::eq::R0_equation}
+% 		sed -i.tmp 's/\\subref{/\\subref{WHATEVER::/g' *.tex
+%			This will change all the subrefs by adding WHATEVER before. Example (adding article1 for each tex file in ./article1/ folder):
 % 			\eqref{eq::R0_equation} in ./article1/chap1.tex becomes \eqref{article1::eq::R0_equation}
 % 
 %	For safety reasons, the original file will be kept in a temporary file '.tmp'. Example:
@@ -44,6 +47,7 @@
 %%%% font
 \usepackage{fontspec}
 \usepackage{marvosym}
+\usepackage{fontawesome5}
 
 %%%% Language
 \usepackage{polyglossia}
@@ -56,7 +60,8 @@
 
 %%%% marges, space, titles...
 \usepackage[top=3.75cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
-% \usepackage{setspace}
+\usepackage{setspace}
+\onehalfspacing
 \setlength{\parindent}{0ex}   % indentation au début de chaque paragraphe
 \setlength{\parskip}{3ex plus 0.5ex minus 0.2ex} % espace vertical entre paragraphes
 
@@ -69,6 +74,9 @@
 
 \usepackage{titletoc}
 	\titlecontents{chapter}[0pt]{}{\bfseries\chapterstring~\thecontentslabel~}{\bfseries}{\hspace{1em plus 1fill}\contentspage}
+	\dottedcontents{section}[5.5em]{}{3.2em}{1pc}
+	\dottedcontents{figure}[5.5em]{}{3.2em}{1pc}
+	\dottedcontents{table}[5.5em]{}{3.2em}{1pc}
 
 %%%% Appendix
 \usepackage{appendix}
@@ -101,8 +109,11 @@
 \usepackage[section]{placeins}
 
 %% To create multi-figures
-\usepackage{caption}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[list=off]{bicaption}
+
 \usepackage{subcaption}
+	\captionsetup{subrefformat=parens}
 
 %% Colours
 \usepackage[dvipsnames, svgnames]{xcolor}
@@ -121,6 +132,7 @@
 
 %% Tikz
 \usepackage{tikz}
+\usepackage{pgfplots}
 
 %%%% Tab, list...
 %% Best package for tables
@@ -132,14 +144,18 @@
 	\SetEnumitemKey{diagSep}{topsep=0pt, partopsep=0pt} % Used in the acknowledgements only, can be removed safely
 
 %% Nomenclature (containing three sections: Acronyms, greek symbols, roman symbols) https://tex.stackexchange.com/questions/452107/nomenclature-having-two-or-more-descriptions-and-units-for-a-symbol
-\usepackage[intoc]{nomencl}
+\usepackage[intoc, refpage]{nomencl}
 
 %% Change caption entries to whatever you want (also done in the ToC)
 \addto\captionsenglish{ % Replace "english" with the language you use, if you use babel you might have to replace english by british or USenglish
 	\renewcommand{\contentsname}{TABLE DES MATIÈRES}
 	\renewcommand{\listtablename}{LISTE DES TABLEAUX}
 	\renewcommand{\listfigurename}{LISTE DES FIGURES}
+	\renewcommand{\listtheoremname}{LISTE DES DÉFINITIONS}
 }
+
+%%%% Pseudo-code typing
+\usepackage[algoruled,vlined]{algorithm2e}
 
 %%%% Links
 \usepackage{url}
@@ -148,8 +164,11 @@
 %%%% Bibliography and table of contents
 %% Bibliography output using biblatex
 \usepackage{csquotes}
-\usepackage[style=apa, natbib=true, sorting=ynt, url=false, doi=false]{biblatex}
+\usepackage[uniquelist=false, backend=biber, citestyle=authoryear-comp, sorting=ynt, giveninits=true, hyperref, natbib, url=false, doi=false, eprint=false, isbn=false, maxbibnames=25, maxcitenames=1, mincitenames=1]{biblatex}
 \addbibresource{phd.bib}
+\DeclareFieldFormat{labelnumberwidth}{} % To not print the number in the bibliography list
+\DeclareFieldFormat{titlecase}{\MakeSentenceCase*{#1}} % Change "THIS IS A TITLE" to "This is a title". If this does not work, check your bibfile: a double {{...}} protects from modifying the caps 
+\DefineBibliographyExtras{french}{\renewcommand*\mkbibnamefamily[1]{#1}} % To prevent french language to capitalised titles
 
 %% Table of content (= ToC)
 \usepackage[nottoc]{tocbibind}
@@ -172,6 +191,7 @@
 		inter-unit-product=\ensuremath{{}\cdot{}},
 		per-mode=symbol
 	}
+\usepackage{thmtools} % To list theorems in ToC
 
 \DeclareMathOperator{\logit}{logit}
 
@@ -210,7 +230,7 @@
 
 %%%%%%%%%%%%%%%%%%   HYPHENATION    %%%%%%%%%%%%%%%%%%
 %%%% If latex has troubles to split a word, you can teach it here
-% \hyphenation{cal-cu-lus}
+\hyphenation{in-teg-ro-dif-fer-ence}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%   NEW COMMANDS USER'S SPECIFIC   %%%%%%%%%%%%%%%%%
@@ -226,14 +246,19 @@
 %%%% Tikz
 %% Libraries (specific tikz commands are in article*/main.tex files)
 \usetikzlibrary{arrows, plotmarks, decorations.markings}
-\tikzstyle{arrow} = [->,>=stealth,thick,rounded corners=4pt,line width=1pt]
+\tikzstyle{arrow} = [->,>=Latex,thick,rounded corners=4pt,line width=1pt]
 \usetikzlibrary{shadows}
 \usetikzlibrary{shadings}
 \usetikzlibrary{positioning} % relative coodinate
 \usetikzlibrary{tikzmark, calc} % calc, to calculate coordinate
 \usetikzlibrary{decorations.pathmorphing} % to snake an arrow
 \usetikzlibrary{shapes.arrows}
+\usetikzlibrary{arrows.meta} % For style latex, Latex, etc...
 \usetikzlibrary{patterns}
+\usetikzlibrary{graphdrawing}
+	\usegdlibrary{trees, layered} % Load the algos "tree" and "layered" for drawing graphs
+\usetikzlibrary{graphs}
+% \usetikzlibrary{quotes} % https://tex.stackexchange.com/questions/310207/label-on-edges-with-tikz-graph
 
 %% Gradient shadings command
 \makeatletter
@@ -249,15 +274,15 @@
 			\ifnum\pgfutil@tempcntb=1\relax%
 				\edef\pgf@spec{color(0)=(\pgf@tmp);color(25)=(\pgf@tmp)}%
 			\else%
-	        \ifnum\pgfutil@tempcntb<\pgfutil@tempcnta\relax%
+			\ifnum\pgfutil@tempcntb<\pgfutil@tempcnta\relax%
 				\pgfmathparse{25+\pgf@step/4+(\pgfutil@tempcntb-1)*\pgf@step}%
 				\edef\pgf@spec{\pgf@spec;color(\pgfmathresult)=(\pgf@tmp)}%
-	        \else%
-	        	\edef\pgf@spec{\pgf@spec;color(75)=(\pgf@tmp);color(100)=(\pgf@tmp)}%
-	        \fi%
-	    \fi%
-	    \advance\pgfutil@tempcntb by1\relax%
-	    }%
+			\else%
+				\edef\pgf@spec{\pgf@spec;color(75)=(\pgf@tmp);color(100)=(\pgf@tmp)}%
+			\fi%
+		\fi%
+		\advance\pgfutil@tempcntb by1\relax%
+		}%
 	\fi%
 	\csname pgfdeclare#2shading\endcsname{#1}{100}\pgf@spec%
 }
@@ -292,7 +317,7 @@
 %%%% Title page
 \begin{titlepage}
 	\begin{center}
-		\textsc{Your title small caps} \\
+		\textsc{A theoretical investigation of the key drivers influencing trees' range limits and their migration rates} \\
 	\vspace{2cm}
 	par \\
 	\vspace{2cm}
@@ -367,30 +392,44 @@
 %% List of figures
 \listoffigures
 
+%% List of defintions ---> Requires the package thmtools
+\listoftheorems[ignoreall, onlynamed={defi}]
+
 \newpage
 %%%% Main body
 %% Start arabic numbering
 \pagenumbering{arabic}
 
 %% Input chapters
-\input{./introduction}
-\input{./article1/main}
-\input{./article3/main}
+\begin{french}
+	\input{./introduction_fr}
+\end{french}
+% \input{./introduction}
+% \input{./article1/main}
+% \input{./article3/main}
 
 \chapter{Examples of nomenclature commands}
 In this section we adapt EBT\nomenclature[A]{EBT}{Escalator Boxcar Train} to spatial PSPMs, with the space $ \Gamma $\nomenclature[G]{$ \Gamma $}{Physical space, $ \Gamma \subset \R^2 $ bounded} discretised such that $ \Gamma = \bigcup_{k} \gamma_k $. The growth speed of trees is $ G $\nomenclature[L]{$ G $}{Individual tree growth \nomunit{\metre\per\second}}. Actually, I changed my mind and now G stands for the Galapagos Islands\nomenclature[L]{G}{The Galapagos Islands}.
 
-\input{./discussion}
+% \input{./discussion}
 
-\printbibliography[heading=bibintoc, title=BIBLIOGRAPHIE]
+\begin{refcontext}[sorting = nyt]
+	\printbibliography[heading = bibintoc, title = BIBLIOGRAPHIE]
+\end{refcontext}
 
 \renewcommand{\chapterstring}{ANNEXE}
 \titlecontents{chapter}[0pt]{}{\bfseries ANNEXE~\thecontentslabel~}{\bfseries}{\hspace{1em plus 1fill}\contentspage}
 \begin{appendices}
-	\chapter{Article 1}
-	\input{article1/appendices/app_calc_R0}
-	\input{article1/appendices/app_purves2009}
-	\chapter{Article 2}
+	\chapter{Introduction générale (Chapter \ref{chap::intro})}
+	\input{appendices/app_intro.tex}
+	\chapter{Climate-induced variation in the demography of 14 tree species is not sufficient to explain their distribution in eastern North America (Chapter \ref{chap::article1})}
+	% \input{article1/appendices/app_S1}
+	% \input{article1/appendices/app_S2}
+	% \input{article1/appendices/app_S3}
+	% \input{article1/appendices/app_S4}
+	% \input{article1/appendices/app_S5}
+	% \input{article1/appendices/app_S6}
+	% \chapter{Article 2}
 \end{appendices}
 
 %%%% Ends by a blank page, congrats!

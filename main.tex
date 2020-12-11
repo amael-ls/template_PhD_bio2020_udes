@@ -164,7 +164,7 @@
 %%%% Bibliography and table of contents
 %% Bibliography output using biblatex
 \usepackage{csquotes}
-\usepackage[uniquelist=false, backend=biber, citestyle=authoryear-comp, sorting=ynt, giveninits=true, hyperref, natbib, url=false, doi=false, eprint=false, isbn=false, maxbibnames=25, maxcitenames=1, mincitenames=1]{biblatex}
+\usepackage[uniquelist=false, backend=biber, citestyle=authoryear-comp, sorting=ynt, giveninits=true, hyperref, natbib, url=false, doi=false, eprint=false, isbn=false, maxbibnames=25, maxcitenames=1, mincitenames=1, useprefix=true]{biblatex}
 \addbibresource{phd.bib}
 \DeclareFieldFormat{labelnumberwidth}{} % To not print the number in the bibliography list
 \DeclareFieldFormat{titlecase}{\MakeSentenceCase*{#1}} % Change "THIS IS A TITLE" to "This is a title". If this does not work, check your bibfile: a double {{...}} protects from modifying the caps 
